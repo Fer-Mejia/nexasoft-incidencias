@@ -43,12 +43,12 @@ void main() {
     final gestor = GestorIncidencias();
 
     await gestor.crear(
-      'Error de red',
-      'No hay conexión',
-      'Cliente de prueba',
-      'Redes',
-    );
-
+  'Error de red',
+  'No hay conexión',
+  'Cliente de prueba',
+  'Redes',
+  'Media',
+);
     expect(gestor.cantidadPendientes, 1);
     expect(gestor.contar('Pendiente'), 1);
   });
