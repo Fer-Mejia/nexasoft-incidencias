@@ -12,9 +12,26 @@ class GestorIncidencias {
         incidencias.where((x) => x.estado == 'Pendiente').length;
   }
 
-  List<Incidencia> buscar(String texto) {
-    if (texto.trim().isEmpty) return incidencias;
-    return incidencias.where((x) => x.titulo.contains(texto)).toList();
+  List<Incidencia> buscar(
+    String texto, {
+    String estado = 'Todos',
+    String prioridad = 'Todas',
+  }) {
+    final consulta = texto.trim().toLowerCase();
+
+    return incidencias.where((x) {
+      final coincideTexto = consulta.isEmpty ||
+          x.titulo.toLowerCase().contains(consulta) ||
+          x.descripcion.toLowerCase().contains(consulta);
+
+      final coincideEstado =
+          estado == 'Todos' || x.estado == estado;
+
+      final coincidePrioridad =
+          prioridad == 'Todas' || x.prioridad == prioridad;
+
+      return coincideTexto && coincideEstado && coincidePrioridad;
+    }).toList();
   }
 
   Incidencia? porId(String id) {
@@ -43,7 +60,6 @@ class GestorIncidencias {
     }
   }
 
-  
   Future<void> cambiarPrioridad(String id, String prioridad) async {
     const prioridadesValidas = ['Baja', 'Media', 'Alta'];
 
@@ -60,7 +76,7 @@ class GestorIncidencias {
     }
   }
 
-Future<void> crear(
+  Future<void> crear(
   String titulo,
   String descripcion,
   String cliente,
@@ -86,6 +102,7 @@ Future<void> crear(
 
   incidencias.insert(0, nuevo);
   cantidadPendientes++;
+
   await datos.guardar(incidencias);
 }
 
